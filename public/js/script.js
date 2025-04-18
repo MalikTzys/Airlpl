@@ -4,10 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const body = document.body;
     const chatMessages = document.getElementById('chat-messages');
     
-    // Store original window dimensions
-    let windowHeight = window.innerHeight;
-    let windowWidth = window.innerWidth;
-    
     // Get all input fields and send buttons (both mobile and desktop)
     const userInputs = document.querySelectorAll('#user-input, #mobile-user-input, .chat-input, .search-input');
     const sendButtons = document.querySelectorAll('#send-button, #mobile-send-button');
@@ -71,8 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     addBotMessage(msg.content, false);
                 }
             });
-            // Scroll to bottom after loading chat history
-            setTimeout(scrollToBottom, 100);
         } else if (chatMessages) {
             // Initial welcome message only if no chat history
             setTimeout(() => {
@@ -129,8 +123,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (message !== '') {
                         sendMessage(message);
                         clearAllInputs();
-                        // Focus the input field again for mobile
-                        refocusInputAfterSend();
                     }
                 });
             }
@@ -151,33 +143,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                 });
-                
-                // Adding focus event for mobile
-                input.addEventListener('focus', function() {
-                    // Short delay to ensure keyboard is fully opened
-                    setTimeout(() => {
-                        handleKeyboardAppearance(true);
-                    }, 300);
-                });
-                
-                input.addEventListener('blur', function() {
-                    setTimeout(() => {
-                        handleKeyboardAppearance(false);
-                    }, 300);
-                });
             }
         });
-    }
-
-    // Function to refocus input after sending a message (better mobile UX)
-    function refocusInputAfterSend() {
-        // On mobile, focus the mobile input
-        if (window.innerWidth <= 992) {
-            const mobileInput = document.querySelector('#mobile-user-input') || document.querySelector('.chat-input');
-            if (mobileInput) {
-                mobileInput.focus();
-            }
-        }
     }
 
     setupMessageSending();
@@ -211,12 +178,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1500);
     }
     
-    // Function to generate bot responses - you'll need to implement your own logic here
-    function generateBotResponse(message) {
-        // Simple example response
-        return "Terimakasih atas pesan Anda: \"" + message + "\". Kami akan segera memproses pertanyaan Anda.";
-    }
-    
     // Function to add user message to chat
     function addUserMessage(message, save = true) {
         if (!chatMessages) return;
@@ -230,7 +191,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         messageElement.innerHTML = `
             ${message}
-            <div class="message-time">${timeString}</div>
         `;
         
         chatMessages.appendChild(messageElement);
@@ -255,7 +215,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         messageElement.innerHTML = `
             ${message}
-            <div class="message-time">${timeString}</div>
         `;
         
         chatMessages.appendChild(messageElement);
@@ -293,19 +252,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Enhanced scroll to bottom function
+    // Function to scroll chat to bottom
     function scrollToBottom() {
         if (chatMessages) {
-            // Use smoothScroll for better UX when possible
-            if ('scrollBehavior' in document.documentElement.style) {
-                chatMessages.scrollTo({
-                    top: chatMessages.scrollHeight,
-                    behavior: 'smooth'
-                });
-            } else {
-                // Fallback for browsers that don't support smooth scrolling
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
     }
     
@@ -330,107 +280,4 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add animations on load
     addLoadAnimations();
-    
-    // ===== MOBILE KEYBOARD HANDLING =====
-    
-    // Function to handle keyboard appearance/disappearance
-    function handleKeyboardAppearance(isKeyboardVisible) {
-        const chatContainer = document.querySelector('.chat-container');
-        const chatInput = document.querySelector('.chat-input-container');
-        
-        if (!chatContainer || !chatInput) return;
-        
-        if (isKeyboardVisible) {
-            // When keyboard is visible
-            chatContainer.classList.add('keyboard-open');
-            document.body.classList.add('keyboard-open');
-            
-            // Make sure chat area remains scrollable
-            chatMessages.style.flexGrow = '1';
-            chatMessages.style.overflow = 'auto';
-            
-            // Scroll to bottom with a slight delay to ensure keyboard is fully opened
-            setTimeout(scrollToBottom, 300);
-        } else {
-            // When keyboard is hidden
-            chatContainer.classList.remove('keyboard-open');
-            document.body.classList.remove('keyboard-open');
-            
-            // Reset any temporary styles
-            chatMessages.style.paddingBottom = '';
-        }
-    }
-    
-    // Detect keyboard visibility changes through window resize events
-    function setupKeyboardDetection() {
-        // Only for mobile devices
-        if (window.innerWidth <= 992) {
-            window.addEventListener('resize', function() {
-                // If height significantly decreases, keyboard is likely visible
-                const isKeyboardVisible = window.innerHeight < windowHeight * 0.75;
-                handleKeyboardAppearance(isKeyboardVisible);
-                
-                // Update stored dimensions for future comparisons
-                windowHeight = window.innerHeight;
-                windowWidth = window.innerWidth;
-            });
-            
-            // Support for iOS devices
-            if ('visualViewport' in window) {
-                window.visualViewport.addEventListener('resize', function() {
-                    const isKeyboardVisible = window.visualViewport.height < windowHeight * 0.75;
-                    handleKeyboardAppearance(isKeyboardVisible);
-                });
-            }
-        }
-    }
-    
-    // Setup keyboard detection
-    setupKeyboardDetection();
-    
-    // Orientation change handler
-    window.addEventListener('orientationchange', function() {
-        // Small delay to allow the browser to complete orientation change
-        setTimeout(() => {
-            windowHeight = window.innerHeight;
-            windowWidth = window.innerWidth;
-            scrollToBottom();
-        }, 300);
-    });
-    
-    // Add CSS rules for keyboard handling
-    function addKeyboardStyles() {
-        const style = document.createElement('style');
-        style.textContent = `
-            body.keyboard-open {
-                height: 100% !important;
-                position: fixed;
-                width: 100%;
-            }
-            
-            .chat-container.keyboard-open {
-                bottom: 0 !important;
-                position: absolute;
-                height: 100% !important;
-            }
-            
-            .chat-container.keyboard-open .chat-messages {
-                flex: 1;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            
-            @media (max-width: 992px) {
-                .chat-input-container {
-                    position: sticky !important;
-                    bottom: 0 !important;
-                    z-index: 1000;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    // Add keyboard styles
-    addKeyboardStyles();
 });
