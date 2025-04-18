@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Original code components
+    // DOM Elements
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
     const chatMessages = document.getElementById('chat-messages');
@@ -281,185 +281,63 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add animations on load
     addLoadAnimations();
     
-    // ===== KEYBOARD FIX FOR MOBILE DEVICES =====
-    
-    // Variables to store initial viewport settings
-    let viewportInitialHeight;
-    let initialClientHeight;
-    const rightPanel = document.querySelector('.right-panel');
+    // Mobile keyboard handling
+    let viewportHeight = window.innerHeight;
     const chatContainer = document.querySelector('.chat-container');
     const chatInputContainer = document.querySelector('.chat-input-container');
     
-    // Check if this is a mobile device
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    // Store original viewport height
+    window.addEventListener('load', function() {
+        viewportHeight = window.innerHeight;
+        document.documentElement.style.setProperty('--viewport-height', `${viewportHeight}px`);
+    });
     
-    if (isMobile) {
-        // Store initial heights when page loads
-        initialClientHeight = document.documentElement.clientHeight;
-        viewportInitialHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    // Handle resize events (including keyboard appearance)
+    window.addEventListener('resize', function() {
+        const currentHeight = window.innerHeight;
+        const isKeyboardVisible = currentHeight < viewportHeight;
         
-        // Function to handle visual viewport changes (modern browsers)
-        function handleVisualViewportResize() {
-            const currentViewportHeight = window.visualViewport.height;
+        if (isKeyboardVisible) {
+            // Keyboard is visible
+            document.body.classList.add('keyboard-visible');
             
-            // If the viewport height is significantly less than initial, keyboard is likely shown
-            const keyboardShown = currentViewportHeight < viewportInitialHeight * 0.75;
-            
-            if (keyboardShown) {
-                // Keyboard is shown - adjust layout
-                document.body.classList.add('keyboard-open');
-                
-                if (rightPanel) {
-                    // Fix the height of the chat panel
-                    rightPanel.style.height = `${currentViewportHeight}px`;
-                }
-                
-                if (chatContainer) {
-                    // Adjust chat container to make room for keyboard and input
-                    const inputHeight = chatInputContainer ? chatInputContainer.offsetHeight : 60;
-                    chatContainer.style.height = `${currentViewportHeight - inputHeight}px`;
-                }
-                
-                // Scroll to bottom after a brief delay to ensure layout is updated
-                setTimeout(scrollToBottom, 100);
-            } else {
-                // Keyboard is hidden - restore normal layout
-                document.body.classList.remove('keyboard-open');
-                
-                if (rightPanel) {
-                    rightPanel.style.height = '';
-                }
-                
-                if (chatContainer) {
-                    chatContainer.style.height = '';
-                }
-            }
-        }
-        
-        // Function to handle resize events (fallback for older browsers)
-        function handleResize() {
-            const currentHeight = window.innerHeight;
-            
-            // If the window height is significantly less than initial, keyboard is likely shown
-            const keyboardShown = currentHeight < initialClientHeight * 0.75;
-            
-            if (keyboardShown) {
-                // Keyboard is shown - adjust layout
-                document.body.classList.add('keyboard-open');
-                
-                if (rightPanel) {
-                    rightPanel.style.height = `${currentHeight}px`;
-                }
-                
-                if (chatContainer) {
-                    const inputHeight = chatInputContainer ? chatInputContainer.offsetHeight : 60;
-                    chatContainer.style.height = `${currentHeight - inputHeight}px`;
-                }
-                
-                setTimeout(scrollToBottom, 100);
-            } else {
-                // Keyboard is hidden - restore normal layout
-                document.body.classList.remove('keyboard-open');
-                
-                if (rightPanel) {
-                    rightPanel.style.height = '';
-                }
-                
-                if (chatContainer) {
-                    chatContainer.style.height = '';
-                }
-            }
-        }
-        
-        // Add CSS rule for keyboard-open state
-        const style = document.createElement('style');
-        style.innerHTML = `
-            body.keyboard-open {
-                overflow: hidden;
-                position: fixed;
-                width: 100%;
-                height: 100%;
+            // Ensure chat container has proper height
+            if (chatContainer) {
+                chatContainer.style.height = `${currentHeight - (chatInputContainer ? chatInputContainer.offsetHeight : 0)}px`;
             }
             
-            body.keyboard-open .right-panel {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                overflow: hidden;
-            }
-            
-            body.keyboard-open .chat-container {
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            
-            body.keyboard-open .chat-input-container {
-                position: absolute;
-                bottom: 0;
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Add event listeners for input focus/blur to manage keyboard state
-        userInputs.forEach(input => {
-            if (input) {
-                input.addEventListener('focus', function() {
-                    // When input is focused, keyboard will appear
-                    // Add a small delay to ensure keyboard is fully shown
-                    setTimeout(function() {
-                        if (window.visualViewport) {
-                            handleVisualViewportResize();
-                        } else {
-                            handleResize();
-                        }
-                        // Scroll to bottom to ensure input is visible
-                        scrollToBottom();
-                    }, 300);
-                });
-            }
-        });
-        
-        // Use visualViewport API if available (modern browsers)
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', handleVisualViewportResize);
+            // Scroll to bottom after a short delay to ensure layout is complete
+            setTimeout(scrollToBottom, 100);
         } else {
-            // Fallback to window resize for older browsers
-            window.addEventListener('resize', handleResize);
-        }
-        
-        // Prevent page zoom on iOS when focusing input fields
-        const metaViewport = document.querySelector('meta[name=viewport]');
-        if (!metaViewport) {
-            const newMetaViewport = document.createElement('meta');
-            newMetaViewport.name = 'viewport';
-            newMetaViewport.content = 'width=device-width, initial-scale=1, maximum-scale=1';
-            document.head.appendChild(newMetaViewport);
-        } else {
-            metaViewport.content = 'width=device-width, initial-scale=1, maximum-scale=1';
-        }
-        
-        // Prevent iOS from trying to scroll to focused input
-        document.addEventListener('touchmove', function(e) {
-            if (document.body.classList.contains('keyboard-open')) {
-                // Allow scrolling only within chat messages
-                if (!isDescendant(chatMessages, e.target)) {
-                    e.preventDefault();
-                }
+            // Keyboard is hidden
+            document.body.classList.remove('keyboard-visible');
+            
+            // Reset chat container height
+            if (chatContainer) {
+                chatContainer.style.height = '';
             }
-        }, { passive: false });
-        
-        // Helper function to check if element is descendant
-        function isDescendant(parent, child) {
-            let node = child;
-            while (node != null) {
-                if (node === parent) {
-                    return true;
-                }
-                node = node.parentNode;
-            }
-            return false;
         }
+    });
+    
+    // Focus handling for input fields
+    userInputs.forEach(input => {
+        if (input) {
+            // When input is focused, add a class to help with positioning
+            input.addEventListener('focus', function() {
+                document.body.classList.add('input-focused');
+                // Scroll to bottom after a short delay
+                setTimeout(scrollToBottom, 100);
+            });
+            
+            // When input loses focus, remove the class
+            input.addEventListener('blur', function() {
+                document.body.classList.remove('input-focused');
+            });
+        }
+    });
+    
+    // Function to generate bot response (placeholder)
+    function generateBotResponse(message) {
+        return "Terima kasih atas pesan Anda. Saya sedang memproses informasi yang Anda berikan.";
     }
 });
