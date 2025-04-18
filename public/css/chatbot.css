@@ -781,35 +781,30 @@ body.dark-mode .back-button {
     }
 }
 
-/* Mobile and Tablet Responsive Design - Combined for consistency */
+/* Improved Responsive Design */
+
+/* Base Mobile Styles - For all mobile devices */
 @media (max-width: 992px) {
     .container {
         flex-direction: column;
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
     }
     
     body {
         background: var(--purple-gradient);
-        /* Critical fix: Allow body to scroll when keyboard appears */
-        position: fixed;
-        width: 100%;
-        height: 100%;
         overflow: hidden;
     }
     
     .left-panel {
-        display: none; /* Hide the left panel completely on mobile and tablet */
+        display: none; /* Hide the left panel on mobile */
     }
     
     .right-panel {
         width: 100%;
         height: 100vh;
         box-shadow: none;
-        /* Critical fix: Make chat panel flexible when keyboard appears */
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
     }
     
     /* Show mobile back button */
@@ -824,63 +819,30 @@ body.dark-mode .back-button {
         padding: 1rem 1rem 1rem 60px;
         justify-content: center;
         border-bottom: none;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 10;
     }
     
     .chat-container {
-        /* Critical fixes for mobile keyboard */
         padding: 1rem;
-        padding-top: 70px; /* Space for header */
-        height: 100%;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        flex-direction: column;
+        height: calc(100vh - 70px);
+        justify-content: flex-end;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
     }
     
     .chat-input-container {
-        position: absolute;
+        position: fixed;
         bottom: 15px;
         left: 15px;
         right: 15px;
         background-color: rgba(60, 13, 94, 0.3);
         backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px); /* For Safari */
         border: 1px solid rgba(255, 255, 255, 0.1);
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         z-index: 100;
         display: flex;
-    }
-    
-    .chat-messages {
-        /* Critical fix: Make messages container flexible and scrollable */
-        flex: 1;
-        overflow-y: auto;
-        padding-bottom: 70px; /* Space for input */
-        gap: 20px;
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-    }
-    
-    /* Adjust message bubbles */
-    .bot-message {
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 15px;
-        border-bottom-left-radius: 5px;
-        max-width: 85%;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-    
-    .user-message {
-        background-color: rgba(60, 13, 94, 0.6);
-        border-radius: 15px;
-        border-bottom-right-radius: 5px;
-        max-width: 85%;
+        width: calc(100% - 30px);
+        max-width: 100%;
     }
     
     .chat-input {
@@ -890,6 +852,7 @@ body.dark-mode .back-button {
         color: white;
         padding: 12px 20px;
         margin-right: 8px;
+        width: 100%;
     }
     
     .chat-input::placeholder {
@@ -900,43 +863,75 @@ body.dark-mode .back-button {
         min-width: 40px;
         background-color: white;
         color: var(--purple-primary);
+        flex-shrink: 0;
+    }
+    
+    .chat-messages {
+        padding-bottom: 80px; /* Make room for fixed input container */
+        gap: 20px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        height: calc(100% - 50px);
+    }
+    
+    .message {
+        word-break: break-word;
+    }
+    
+    /* Adjust message bubbles */
+    .bot-message {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        border-bottom-left-radius: 5px;
+        max-width: 85%;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-right: auto;
+    }
+    
+    .user-message {
+        background-color: rgba(60, 13, 94, 0.6);
+        border-radius: 15px;
+        border-bottom-right-radius: 5px;
+        max-width: 85%;
+        margin-left: auto;
     }
 }
 
-/* Tablet-specific minor adjustments while maintaining mobile layout */
-@media (min-width: 768px) and (max-width: 992px) {
-    /* Just a few size adjustments for tablet comfort while keeping mobile layout */
-    .chat-header {
-        padding: 1.25rem 1.25rem 1.25rem 65px;
-    }
-    
+/* Tablet specific adjustments */
+@media (min-width: 601px) and (max-width: 992px) {
     .chat-input-container {
         bottom: 20px;
         left: 20px;
         right: 20px;
+        width: calc(100% - 40px);
         padding: 8px 12px;
     }
     
-    .chat-input {
-        padding: 14px 22px;
-        font-size: 1rem;
+    .chat-messages {
+        padding-bottom: 90px;
     }
     
+    /* Slightly larger buttons on tablets */
     .send-button {
         width: 45px;
         height: 45px;
         min-width: 45px;
     }
     
-    /* Slightly increase bubble size on tablets */
-    .message {
-        max-width: 75%;
-        padding: 14px 20px;
+    /* Better spacing for tablets */
+    .chat-container {
+        padding: 1.5rem;
+    }
+    
+    /* Allow slightly wider messages on tablets */
+    .bot-message, 
+    .user-message {
+        max-width: 80%;
     }
 }
 
-/* Small phones - further refinements */
-@media (max-width: 576px) {
+/* Smartphone adjustments */
+@media (max-width: 600px) {
     .mobile-back-button {
         padding: 12px;
         top: 10px;
@@ -954,26 +949,31 @@ body.dark-mode .back-button {
         padding: 6px 10px;
     }
     
-    /* Ensure input remains visible when keyboard is shown */
     .chat-input {
         padding: 10px 15px;
         font-size: 0.95rem;
     }
     
-    /* Reduce decorations to improve performance */
+    .send-button {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+    
+    /* Lighter bg decorations on small screens */
     .chat-decoration-1, 
     .chat-decoration-2 {
         opacity: 0.05;
     }
     
-    /* Ensure message containers don't become too wide */
+    /* Wider messages on small screens */
     .bot-message, 
     .user-message {
         max-width: 90%;
     }
 }
 
-/* Very small devices and old phones */
+/* For small smartphones */
 @media (max-width: 360px) {
     .mobile-back-button {
         padding: 8px;
@@ -990,11 +990,24 @@ body.dark-mode .back-button {
         left: 8px;
         right: 8px;
         padding: 4px 8px;
+        width: calc(100% - 16px);
+    }
+    
+    .chat-input {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .send-button {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
     }
     
     /* Make text slightly smaller on very small screens */
     .message {
         font-size: 0.9rem;
+        padding: 10px 15px;
     }
     
     .chat-name {
@@ -1002,8 +1015,8 @@ body.dark-mode .back-button {
     }
 }
 
-/* Fix for specific device orientation issues */
-@media (max-height: 600px) and (orientation: landscape) {
+/* Fix for landscape orientation on small devices */
+@media (max-height: 500px) and (orientation: landscape) {
     .chat-header {
         padding: 0.5rem;
     }
@@ -1015,47 +1028,67 @@ body.dark-mode .back-button {
     
     .chat-input-container {
         bottom: 5px;
+        left: 10px;
+        right: 10px;
+        width: calc(100% - 20px);
     }
     
+    /* Reduce padding to fit more content */
     .chat-container {
-        padding-top: 50px; /* Smaller header space in landscape */
+        padding: 0.5rem;
+        height: calc(100vh - 50px);
+    }
+    
+    .chat-messages {
+        padding-bottom: 50px;
+    }
+    
+    /* Smaller input on landscape */
+    .chat-input {
+        padding: 6px 12px;
+    }
+    
+    .send-button {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
     }
 }
 
-/* Additional fixes for iOS keyboard behavior */
-@supports (-webkit-touch-callout: none) {
-    /* iOS-specific fixes */
-    body {
-        height: -webkit-fill-available;
+/* Fix for high-DPI/retina screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .chat-input-container {
+        border-width: 0.5px;
     }
     
-    .chat-container {
-        height: -webkit-fill-available;
-    }
-    
-    /* Fix for viewport units on iOS */
-    .right-panel {
-        height: -webkit-fill-available;
+    .chat-input {
+        border-width: 0.5px;
     }
 }
 
-/* Fix for viewport height issues on Chrome Android */
-@supports not (-webkit-touch-callout: none) {
-    /* Android-specific fixes */
-    .chat-container {
-        height: 100vh;
-    }
-}
-
-/* Ensure correct functionality of inputs across devices */
+/* Fix desktop/mobile input visibility */
 @media (min-width: 993px) {
     #mobile-user-input, #mobile-send-button {
         display: none;
+    }
+    
+    /* Show desktop chat input */
+    .chat-input-container {
+        display: flex;
     }
 }
 
 @media (max-width: 992px) {
     #user-input, #send-button {
         display: block;
+    }
+    
+    /* Fix any height issues */
+    html, body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
     }
 }
