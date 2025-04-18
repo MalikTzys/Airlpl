@@ -3,11 +3,109 @@ document.addEventListener('DOMContentLoaded', function() {
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
     const chatMessages = document.getElementById('chat-messages');
+    const chatContainer = document.querySelector('.chat-container');
+    const chatInputContainer = document.querySelector('.chat-input-container');
     
     // Get all input fields and send buttons (both mobile and desktop)
     const userInputs = document.querySelectorAll('#user-input, #mobile-user-input, .chat-input, .search-input');
     const sendButtons = document.querySelectorAll('#send-button, #mobile-send-button');
     const navButtons = document.querySelectorAll('.nav-button');
+    
+    // Track viewport height for mobile keyboard adjustments
+    let viewportHeight = window.innerHeight;
+    let isKeyboardVisible = false;
+    
+    // Mobile keyboard detection and handling
+    function setupMobileKeyboardHandling() {
+        // Store original viewport height
+        viewportHeight = window.innerHeight;
+        
+        // Handle resize events (keyboard showing/hiding)
+        window.addEventListener('resize', function() {
+            // On mobile devices, when keyboard appears, window height decreases
+            if (window.innerWidth <= 992) { // Mobile breakpoint from your CSS
+                const heightDifference = viewportHeight - window.innerHeight;
+                
+                // If height decreased significantly, keyboard is likely visible
+                if (heightDifference > 150) {
+                    isKeyboardVisible = true;
+                    handleKeyboardVisible();
+                } else {
+                    isKeyboardVisible = false;
+                    handleKeyboardHidden();
+                }
+            }
+        });
+        
+        // Handle focus/blur events on input fields
+        userInputs.forEach(function(input) {
+            if (input) {
+                input.addEventListener('focus', function() {
+                    if (window.innerWidth <= 992) {
+                        setTimeout(function() {
+                            handleKeyboardVisible();
+                            scrollToBottom();
+                        }, 300); // Slight delay to allow keyboard to appear
+                    }
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (window.innerWidth <= 992) {
+                        setTimeout(function() {
+                            handleKeyboardHidden();
+                        }, 100);
+                    }
+                });
+            }
+        });
+    }
+    
+    // Function to handle keyboard becoming visible
+    function handleKeyboardVisible() {
+        if (chatContainer && chatInputContainer) {
+            // Add class for when keyboard is visible
+            document.body.classList.add('keyboard-visible');
+            
+            // Make sure the input stays in view
+            chatInputContainer.style.position = 'fixed';
+            chatInputContainer.style.bottom = '0';
+            chatInputContainer.style.left = '15px';
+            chatInputContainer.style.right = '15px';
+            chatInputContainer.style.zIndex = '999';
+            
+            // Adjust chat messages container to not overlap with input
+            const inputHeight = chatInputContainer.offsetHeight;
+            chatMessages.style.paddingBottom = (inputHeight + 15) + 'px';
+            
+            // Scroll to the latest message
+            scrollToBottom();
+        }
+    }
+    
+    // Function to handle keyboard hiding
+    function handleKeyboardHidden() {
+        if (chatContainer && chatInputContainer) {
+            // Remove keyboard visible class
+            document.body.classList.remove('keyboard-visible');
+            
+            // Reset styles if needed
+            // For most cases we can keep the fixed positioning as it works well for the chat interface
+            
+            // Ensure messages don't hide behind input
+            const inputHeight = chatInputContainer.offsetHeight;
+            chatMessages.style.paddingBottom = (inputHeight + 15) + 'px';
+            
+            // Make sure everything is properly positioned after keyboard hides
+            setTimeout(function() {
+                scrollToBottom();
+                // Reset viewportHeight in case it changed
+                viewportHeight = window.innerHeight;
+            }, 300);
+        }
+    }
+    
+    // Initialize mobile keyboard handling
+    setupMobileKeyboardHandling();
     
     // Back button functionality - untuk semua back button di aplikasi
     const backButtons = document.querySelectorAll('.back-button, #mobile-back, #desktop-back');
@@ -67,10 +165,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     addBotMessage(msg.content, false);
                 }
             });
+            
+            // Scroll to bottom after loading chat history
+            setTimeout(scrollToBottom, 100);
         } else if (chatMessages) {
             // Initial welcome message only if no chat history
             setTimeout(() => {
                 addBotMessage("Halo, saya adalah chatbot yang siap melayani Anda untuk menjawab pertanyaan pertanyaan Anda.");
+                scrollToBottom();
             }, 1000);
         }
     }
@@ -140,6 +242,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (message !== '') {
                             sendMessage(message);
                             clearAllInputs();
+                            
+                            // Keep focus on input after sending
+                            if (window.innerWidth <= 992) {
+                                this.focus();
+                            }
                         }
                     }
                 });
@@ -252,10 +359,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Function to scroll chat to bottom
+    // Improved function to scroll chat to bottom
     function scrollToBottom() {
         if (chatMessages) {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            // Use smooth scrolling for better UX
+            chatMessages.scrollTo({
+                top: chatMessages.scrollHeight,
+                behavior: 'smooth'
+            });
+            
+            // Fallback in case smooth scrolling doesn't work
+            setTimeout(() => {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 50);
         }
     }
     
@@ -280,64 +396,4 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add animations on load
     addLoadAnimations();
-    
-    // Mobile keyboard handling
-    let viewportHeight = window.innerHeight;
-    const chatContainer = document.querySelector('.chat-container');
-    const chatInputContainer = document.querySelector('.chat-input-container');
-    
-    // Store original viewport height
-    window.addEventListener('load', function() {
-        viewportHeight = window.innerHeight;
-        document.documentElement.style.setProperty('--viewport-height', `${viewportHeight}px`);
-    });
-    
-    // Handle resize events (including keyboard appearance)
-    window.addEventListener('resize', function() {
-        const currentHeight = window.innerHeight;
-        const isKeyboardVisible = currentHeight < viewportHeight;
-        
-        if (isKeyboardVisible) {
-            // Keyboard is visible
-            document.body.classList.add('keyboard-visible');
-            
-            // Ensure chat container has proper height
-            if (chatContainer) {
-                chatContainer.style.height = `${currentHeight - (chatInputContainer ? chatInputContainer.offsetHeight : 0)}px`;
-            }
-            
-            // Scroll to bottom after a short delay to ensure layout is complete
-            setTimeout(scrollToBottom, 100);
-        } else {
-            // Keyboard is hidden
-            document.body.classList.remove('keyboard-visible');
-            
-            // Reset chat container height
-            if (chatContainer) {
-                chatContainer.style.height = '';
-            }
-        }
-    });
-    
-    // Focus handling for input fields
-    userInputs.forEach(input => {
-        if (input) {
-            // When input is focused, add a class to help with positioning
-            input.addEventListener('focus', function() {
-                document.body.classList.add('input-focused');
-                // Scroll to bottom after a short delay
-                setTimeout(scrollToBottom, 100);
-            });
-            
-            // When input loses focus, remove the class
-            input.addEventListener('blur', function() {
-                document.body.classList.remove('input-focused');
-            });
-        }
-    });
-    
-    // Function to generate bot response (placeholder)
-    function generateBotResponse(message) {
-        return "Terima kasih atas pesan Anda. Saya sedang memproses informasi yang Anda berikan.";
-    }
 });
