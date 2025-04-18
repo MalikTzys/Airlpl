@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern AI ChatBot</title>
+    <link rel="stylesheet" href="public/css/chatbot.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light-mode">
+    <!-- Background decorations -->
+    <div class="bg-decoration-1"></div>
+    <div class="bg-decoration-2"></div>
+    <div class="bg-decoration-3"></div>
+    
+    <div class="container">
+        <div class="left-panel">
+            <!-- Left panel content (hidden on mobile) -->
+            <div class="theme-toggle-container">
+                <label class="theme-toggle">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            
+            <div class="chatbot-title">
+                <h1>ChatBot</h1>
+                <p>Integrated With <span class="ai-text">AI</span></p>
+                <div class="title-decoration"></div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button">Apa itu RPL?</button>
+                <button class="nav-button">Daftar Guru RPL</button>
+                <button class="nav-button">Apa Saja Materi Yang Ada Di RPL</button>
+                <button class="nav-button more-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="1"></circle>
+                        <circle cx="19" cy="12" r="1"></circle>
+                        <circle cx="5" cy="12" r="1"></circle>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Ketik Sesuatu...">
+                <button class="search-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="back-button" id="desktop-back">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Back To home page</span>
+            </div>
+            
+            <div class="decoration-triangle"></div>
+            <div class="decoration-circle"></div>
+            <div class="decoration-dots"></div>
+        </div>
+        
+        <div class="right-panel">
+            <!-- Mobile back button (only visible on mobile) -->
+            <div class="mobile-back-button" id="mobile-back">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <!-- <span>AI Assistant</span> -->
+            </div>
+            
+            <div class="chat-header">
+                <div class="chat-avatar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="chat-info">
+                    <div class="chat-name">AI Assistant</div>
+                    <div class="chat-status">Online</div>
+                </div>
+            </div>
+            
+            <div class="chat-container">
+                <div class="chat-date-divider">
+                    <span>Today</span>
+                </div>
+                
+                <div class="chat-messages" id="chat-messages">
+                    <!-- Example message (will be added by JS) -->
+                    <div class="message bot-message">
+                        Halo, saya adalah chatbot yang siap melayani Anda untuk menjawab pertanyaan-pertanyaan Anda.
+                        <div class="message-time">10:30 AM</div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <button class="chat-option-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 8v8"></path>
+                            <path d="M8 12h8"></path>
+                        </svg>
+                    </button>
+                    <input type="text" id="mobile-user-input" class="chat-input" placeholder="Ketik Sesuatu...">
+                    <button id="mobile-send-button" class="send-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="chat-decoration-1"></div>
+            <div class="chat-decoration-2"></div>
+        </div>
+    </div>
+    
+    <script src="public/js/script.js"></script>
+    <script src="public/js/chatbot.js"></script>
+</body>
+</html>
