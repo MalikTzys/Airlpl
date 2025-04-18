@@ -68,9 +68,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         } else if (chatMessages) {
-            // Initial welcome message only if no chat history
             setTimeout(() => {
-                addBotMessage("Halo, saya adalah chatbot yang siap melayani Anda untuk menjawab pertanyaan pertanyaan Anda.");
+                // addBotMessage("Halo, saya adalah chatbot yang siap melayani Anda untuk menjawab pertanyaan pertanyaan Anda.");
             }, 1000);
         }
     }
