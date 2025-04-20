@@ -495,7 +495,6 @@ body.dark-mode .back-button {
     padding: 1.5rem;
     overflow: hidden;
     position: relative;
-    z-index: 1; 
 }
 
 .chat-date-divider {
@@ -523,7 +522,7 @@ body.dark-mode .back-button {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
     position: relative;
-    z-index: 5;
+    z-index: 10; 
 }
 
 .chat-messages::-webkit-scrollbar {
@@ -547,7 +546,7 @@ body.dark-mode .back-button {
     word-wrap: break-word;
     position: relative;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 10;
+    z-index: 5;
 }
 
 .bot-message {
@@ -557,7 +556,6 @@ body.dark-mode .back-button {
     border-bottom-left-radius: 5px;
     width: auto; 
     min-width: 150px; 
-    z-index: 10;
 }
 
 .user-message {
@@ -567,7 +565,6 @@ body.dark-mode .back-button {
     border-bottom-right-radius: 5px;
     width: auto;
     min-width: 150px;
-    z-index: 10;
 }
 
 .message-time {
@@ -578,19 +575,17 @@ body.dark-mode .back-button {
 }
 
 .chat-input-container {
-    display: flex;
     margin-top: 1rem;
+    position: relative;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 25px;
     padding: 5px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    z-index: 1000; 
-    position: sticky;
+    z-index: 20;
+    position: sticky; 
     bottom: 0;
-    left: 0;
-    right: 0;
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+    display: none;
 }
 
 .chat-option-button {
@@ -806,7 +801,6 @@ body.dark-mode .back-button {
     
     body {
         background: var(--purple-gradient);
-        position: relative;
     }
     
     .left-panel, .right-panel {
@@ -821,8 +815,6 @@ body.dark-mode .back-button {
     .right-panel {
         width: 100%;
         height: 100vh;
-        position: relative;
-        z-index: 1;
     }
     
     .chat-header {
@@ -830,23 +822,27 @@ body.dark-mode .back-button {
     }
     
     .chat-container {
+        padding: 1rem;
+        height: calc(var(--vh, 1vh) * 100);
+        padding-bottom: 60px;
         position: relative;
-        z-index: 5;
-        padding-bottom: 80px;
     }
     
     .chat-input-container {
-        position: fixed;
+        display: flex;
+        position: fixed; 
         bottom: 10px;
         left: 10px;
         right: 10px;
-        z-index: 2000; 
-        background-color: rgba(60, 13, 94, 0.9); 
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        z-index: 1000; 
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); 
     }
     
     .chat-messages {
-        z-index: 10;
-        padding-bottom: 100px; 
+        padding-bottom: 80px;
+        margin-bottom: 0;
     }
     
     .decoration-circle, .decoration-dots, .decoration-triangle {
@@ -868,11 +864,6 @@ body.dark-mode .back-button {
 
     .keyboard-visible .chat-messages {
         padding-bottom: 80px; 
-    }
-
-    .chat-decoration-1, .chat-decoration-2, 
-    .bg-decoration-1, .bg-decoration-2, .bg-decoration-3 {
-        z-index: 1; 
     }
 }
 
@@ -918,9 +909,12 @@ body.dark-mode .back-button {
     }
     
     .chat-input-container {
-        bottom: 5px;
-        left: 5px;
-        right: 5px;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        padding: 5px;
+        border-radius: 20px;
+        display: flex;
     }
     
     .chat-input {
@@ -1038,6 +1032,135 @@ body.dark-mode .back-button {
         bottom: 5px;
         left: 5px;
         right: 5px;
+    }
+}
+
+/* Smartwatch specific styles */
+@media (max-width: 280px) {
+    .chat-input-container {
+        padding: 2px;
+        bottom: 3px;
+        left: 3px;
+        right: 3px;
+        border-radius: 15px;
+    }
+    
+    .chat-input {
+        padding: 4px 6px;
+        font-size: 0.8rem;
+        min-height: 25px;
+    }
+    
+    .send-button {
+        width: 25px;
+        height: 25px;
+        min-width: 25px;
+    }
+    
+    .chat-option-button {
+        padding: 4px;
+        width: 25px;
+        height: 25px;
+    }
+    
+    /* Optimize chat messages for tiny screens */
+    .message {
+        max-width: 95%;
+        padding: 6px 8px;
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+        border-radius: 12px;
+    }
+    
+    /* Adjust chat header for smartwatches */
+    .chat-header {
+        padding: 0.4rem;
+        height: 40px;
+    }
+    
+    .chat-avatar {
+        width: 25px;
+        height: 25px;
+        margin-right: 5px;
+    }
+    
+    .chat-name {
+        font-size: 0.8rem;
+    }
+    
+    .chat-status {
+        font-size: 0.65rem;
+    }
+    
+    /* Adjust the container size for the tiny screen */
+    .chat-container {
+        padding: 0.4rem;
+        height: calc(100vh - 80px);
+    }
+    
+    /* For round smartwatches, add some extra padding for the curved edges */
+    .chat-messages {
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-bottom: 60px;
+    }
+    
+    /* Simplified message time for smartwatches */
+    .message-time {
+        font-size: 0.6rem;
+    }
+}
+
+/* Ultra small smartwatches */
+@media (max-width: 200px) {
+    .chat-input-container {
+        padding: 1px;
+        bottom: 2px;
+        left: 2px;
+        right: 2px;
+        border-radius: 10px;
+    }
+    
+    .chat-input {
+        padding: 3px 5px;
+        font-size: 0.7rem;
+        min-height: 20px;
+    }
+    
+    .send-button {
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+    }
+    
+    .chat-option-button {
+        padding: 2px;
+        width: 20px;
+        height: 20px;
+    }
+    
+    .message {
+        padding: 4px 6px;
+        font-size: 0.7rem;
+        border-radius: 8px;
+    }
+    
+    .chat-header {
+        height: 30px;
+        padding: 0.3rem;
+    }
+    
+    .chat-avatar {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .chat-name {
+        font-size: 0.7rem;
+    }
+    
+    .chat-status {
+        display: none;
     }
 }
 
