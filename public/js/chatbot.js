@@ -131,6 +131,21 @@ function generateBotResponse(userMessage) {
         "Inovasi dalam ekosistem RPL: AI Explainability, Massive IoT, Layer-1 Blockchain, Sustainable Cloud Computing, Continuous Security Validation, WebTransport, Motion Tracking, API Composition, Confidential Containers, dan Quantum Resistant Cryptography."
     ];
 
+    responses.facilities = [
+        "Ruang lab RPL berada di ruang kelas 42 dan 43. Setiap lab dilengkapi dengan fasilitas internet yang memadai, infocus, dan komputer yang dioptimalkan untuk kegiatan pemrograman dan pengembangan software.",
+        "RPL memiliki fasilitas laboratorium di ruang 42 dan 43 dengan internet berkecepatan tinggi, proyektor infocus, dan workstation komputer untuk praktik koding dan pengembangan aplikasi.",
+        "Jurusan RPL menggunakan ruang laboratorium 42 dan 43 yang masing-masing dilengkapi dengan koneksi internet stabil, sistem proyektor infocus, dan perangkat komputer untuk kegiatan pemrograman.",
+        "Praktikum RPL dilaksanakan di ruang lab 42 dan 43 yang memiliki infrastruktur lengkap seperti koneksi internet yang memadai, proyektor infocus, dan komputer untuk menunjang kegiatan koding.",
+        "Lab RPL tersebar di dua ruangan yaitu kelas 42 dan 43, dengan fasilitas pendukung berupa jaringan internet berkecepatan tinggi, proyektor infocus, dan komputer yang dirancang untuk kebutuhan pengembangan software.",
+        "Ruang praktik jurusan RPL berada di kelas 42 dan 43, dilengkapi dengan akses internet yang stabil, sistem presentasi infocus, dan perangkat komputer untuk kegiatan koding dan pengembangan aplikasi.",
+        "Laboratorium RPL terletak di ruang 42 dan 43, masing-masing dilengkapi dengan konektivitas internet yang handal, proyektor infocus untuk presentasi, dan komputer khusus untuk aktivitas pemrograman.",
+        "Fasilitas lab jurusan RPL tersedia di ruangan 42 dan 43 dengan dukungan internet berkualitas, sistem proyektor infocus, dan setup komputer yang optimal untuk praktik pengembangan perangkat lunak.",
+        "RPL memiliki dua ruang laboratorium utama di kelas 42 dan 43, keduanya dilengkapi dengan koneksi internet yang memadai, perangkat infocus, dan komputer yang sudah dipersiapkan untuk kegiatan koding.",
+        "Kegiatan praktikum RPL dilakukan di laboratorium ruang 42 dan 43 yang memiliki fasilitas penunjang seperti jaringan internet stabil, proyektor infocus untuk pembelajaran, dan komputer untuk praktik pengembangan aplikasi.",
+        "Lab RPL berada di ruang 42 dan 43 dengan fasilitas lengkap meliputi koneksi internet high-speed, sistem proyektor infocus, dan workstation komputer yang dioptimalkan untuk kegiatan pemrograman dan pengembangan software.",
+        "Siswa RPL melakukan praktikum di ruang laboratorium 42 dan 43 yang dilengkapi dengan koneksi internet yang memadai, proyektor infocus untuk pembelajaran visual, dan komputer untuk praktik koding."
+    ];
+
     // Terima kasih - Thank you responses
     responses.thanks = [
         "Sama-sama! Ada yang bisa saya bantu lagi seputar jurusan RPL?",
@@ -192,8 +207,11 @@ function generateBotResponse(userMessage) {
     else if (userMessage.includes('sertifikasi') || userMessage.includes('sertifikat') || userMessage.includes('lisensi') || userMessage.includes('kredensial')) {
         return getRandomResponse('certifications');
     }
-    else if (userMessage.includes('teknologi') || userMessage.includes('tren') || userMessage.includes('trend') || userMessage.includes('perkembangan') || userMessage.includes('inovasi')) {
+    else if (userMessage.includes('teknologi') || userMessage.includes('tren') || userMessage.includes('trend') || userMessage.includes('perkembangan') || userMessage.includes('inovasi') || userMessage.includes('jawa')) {
         return getRandomResponse('latestTech');
+    }
+    else if (userMessage.includes('ruang') || userMessage.includes('lab') || userMessage.includes('laboratorium') || userMessage.includes('kelas') || userMessage.includes('fasilitas')) {
+        return getRandomResponse('facilities');
     }
     else if (userMessage.includes('terima kasih') || userMessage.includes('thanks') || userMessage.includes('makasih') || userMessage.includes('thank you')) {
         return getRandomResponse('thanks');
