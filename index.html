@@ -9,8 +9,105 @@
     <title>ChatBot - RPL</title>
     <link rel="stylesheet" href="public/css/chatbot.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @media (max-width: 992px) {
+            body {
+                background: #330072;
+            }
+            
+            .right-panel {
+                background: #330072; 
+                background-image: none; 
+            }
+            
+            .chat-header {
+                border-bottom: none;
+                text-align: center;
+                padding: 1rem;
+                display: flex;
+                justify-content: center;
+                position: relative;
+            }
+            
+            .chat-avatar {
+                display: none; 
+            }
+            
+            .chat-info {
+                flex: none; 
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .mobile-back-button {
+                display: flex;
+                position: fixed;
+                left: 20px;
+                top: 5px;
+                z-index: 100;
+            }
+            
+            .chat-name {
+                font-size: 1.2rem;
+                font-weight: 600;
+            }
+            
+            .chat-status {
+                font-size: 0.8rem;
+                opacity: 0.8;
+            }
+            
+            .chat-date-divider {
+                text-align: center;
+                margin: 1rem 0;
+            }
+            
+            .chat-date-divider span {
+                background-color: rgba(255, 255, 255, 0.2);
+                padding: 5px 20px;
+                border-radius: 20px;
+                font-size: 0.85rem;
+            }
+            
+            /* Style messages more like the image */
+            .bot-message {
+                background-color: white;
+                color: #333;
+                border-radius: 20px;
+                padding: 15px 20px;
+                max-width: 90%;
+                margin-bottom: 10px;
+            }
+            
+            /* Style the input at bottom */
+            .chat-input-container {
+                display: flex;
+                position: fixed;
+                bottom: 15px;
+                left: 15px;
+                right: 25px;
+                background-color: rgba(255, 255, 255, 0.1);
+                border-radius: 25px;
+                padding: 5px 15px;
+            }
+            
+            .chat-input {
+                width: 100%;
+                padding: 10px 5px;
+                background: transparent;
+                border: none;
+                color: white;
+            }
+            
+            .chat-input::placeholder {
+                color: rgba(255, 255, 255, 0.7);
+            }
+        }
+    </style>
 </head>
-<body class="light-mode">
+<body class="dark-mode">
     <!-- Background decorations -->
     <div class="bg-decoration-1"></div>
     <div class="bg-decoration-2"></div>
@@ -21,7 +118,7 @@
             <!-- Left panel content (hidden on mobile) -->
             <div class="theme-toggle-container">
                 <label class="theme-toggle">
-                    <input type="checkbox" id="theme-toggle">
+                    <input type="checkbox" id="theme-toggle" checked>
                     <span class="slider round"></span>
                 </label>
             </div>
@@ -69,22 +166,7 @@
         </div>
         
         <div class="right-panel">
-            <!-- Mobile back button (only visible on mobile) -->
-            <div class="mobile-back-button" id="mobile-back">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
-                <!-- <span>AI Assistant</span> -->
-            </div>
-            
             <div class="chat-header">
-                <div class="chat-avatar">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                </div>
                 <div class="chat-info">
                     <div class="chat-name">AI Assistant</div>
                     <div class="chat-status">Online</div>
@@ -97,29 +179,23 @@
                 </div>
                 
                 <div class="chat-messages" id="chat-messages">
-                    <!-- Example message (will be added by JS) -->
-                    <!-- <div class="message bot-message">
+                    <!-- Initial greeting message -->
+                    <div class="message bot-message">
                         Halo, saya adalah chatbot yang siap melayani Anda untuk menjawab pertanyaan-pertanyaan Anda.
-                        <div class="message-time">10:30 AM</div>
-                    </div> -->
+                    </div>
                 </div>
                 
                 <div class="chat-input-container">
-                    <!-- <button class="chat-option-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="M12 8v8"></path>
-                            <path d="M8 12h8"></path>
-                        </svg>
-                    </button> -->
                     <input type="text" id="mobile-user-input" class="chat-input" placeholder="Ketik Sesuatu...">
-                    <!-- <button id="mobile-send-button" class="send-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="22" y1="2" x2="11" y2="13"></line>
-                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                        </svg>
-                    </button> -->
                 </div>
+            </div>
+            
+            <!-- Mobile back button in bottom-left corner -->
+            <div class="mobile-back-button" id="mobile-back">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
             </div>
             
             <div class="chat-decoration-1"></div>
